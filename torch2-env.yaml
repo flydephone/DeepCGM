@@ -1,0 +1,19 @@
+name: torch2
+channels:
+  - defaults
+  - conda-forge
+  - pytorch
+  - nvidia
+dependencies:
+  - spyder
+  - pandas
+  - matplotlib
+  - pillow=10.4.0
+  - scipy
+  - pytorch
+  - torchvision
+  - torchaudio
+  - pytorch-cuda=12.1
+  - pretrainedmodels
+  - albumentations=0.5.2
+  - opencv
