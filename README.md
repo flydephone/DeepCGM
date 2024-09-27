@@ -27,7 +27,7 @@ To install the dependencies, clone the repository and install the required packa
 ```bash
 git clone https://github.com/yourusername/DeepCGM.git
 cd DeepCGM
-conda env create -f DeepCGM.yaml
+conda env create -f requirements.yaml
 ```
 
 ## Repository Structure
