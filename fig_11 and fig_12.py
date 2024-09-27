@@ -1,26 +1,22 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Oct 12 09:56:07 2020
-1、在原有基础上加入人工激活层，保证基本物理规律（物候正增长，总干物质正增长，各器官质量守恒）
-2、参数作为输入，不作为隐藏状态
 @author: hanjingye
 """
 
 
-import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-import datetime
 import os
-import math
-import pickle
-import random
-import copy
-
 import torch
-from torch import nn
-from torch.autograd import Variable
+
+
+from models_aux.MyDataset import MyDataSet
+from models_aux.NaiveLSTM import NaiveLSTM
+from models_aux.DeepCGM_fast import DeepCGM
+from models_aux.MCLSTM_fast import MCLSTM
 from torch.utils.data import DataLoader
+import utils
 
 import datetime
 import time
@@ -33,8 +29,14 @@ from matplotlib.patches import Rectangle
 from matplotlib.ticker import MaxNLocator
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
-
+from matplotlib import rcParams
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+
+config = {
+    "font.size": 8,  # Font size
+    'axes.unicode_minus': False,  # Handle minus signs
+}
+rcParams.update(config)
 
 def FITTING_LOSS(pred, real, max_):
     # pred shape: (14, 25, 8000, 7)
@@ -160,50 +162,6 @@ if __name__ == "__main__":
     obs_col_name = ['TIME','DVS','PAI','WLV','WST','WSO','WAGT',"WRR14"]
     obs_loc = [obs_col_name.index(name) for name in obs_name]
     res_max,res_min,par_max,par_min,wea_fer_max,wea_fer_min = max_min
-        
-    # # %%fig11
-    # loss_models_years = []
-    # for year in ["2018","2019"]:
-    #     loss_models = []
-    #     for model_dir in model_dir_list:
-    #         model_list = os.listdir("model_weight/%s/"%model_dir)
-    #         model_list = [tpt for tpt in model_list if tra_year in tpt]
-    #         loss_seeds = []
-    #         for i,model in enumerate(model_list):
-    #             tra_loss = []
-    #             tes_loss = []
-    #             model_path = 'model_weight/%s/%s'%(model_dir,model)
-    #             trained_model_names = os.listdir(model_path)
-    #             for tpt in trained_model_names[:700]:
-    #                 tra_loss += [float(tpt[:-4].split("_")[-3])]
-    #                 tes_loss += [float(tpt[:-4].split("_")[-1])]
-    #             losses = np.array([tra_loss,tes_loss]).T
-    #             min_indices = np.argmin(losses[:,0], axis=0)
-    #             loss_seeds.append(losses[min_indices,1])
-    #         loss_models.append(np.array(loss_seeds))
-    #     loss_models_years
-    
-    # ncols = 2
-    # fig, axs = plt.subplots(dpi=300, ncols=ncols, figsize=(6, 2))
-    
-    # plt.subplots_adjust(left=0.1,
-    #                     bottom=0.1,
-    #                     right=0.8,
-    #                     top=0.9,
-    #                     wspace=0.1,
-    #                     hspace=0.1)
-    
-    # max_values = [0.8]
-    # for j in range(ncols):
-    #     axs_ij = axs[j]
-    #     pre_loss = loss_models[j]
-    #     # ory_loss = FITTING_LOSS(pre,obs,res_max[obs_loc])
-        
-    #     height_models = np.mean(pre_loss)
-    #     std_models = np.std(pre_loss)
-
-
-    #     axs_ij.bar(day[(res>=0)*(day>=0)],fer[(res>=0)*(day>=0)],color="darkblue",width = 4)
 
     # %% creat instances from class_LSTM
     pre_seeds_models_years = []
@@ -291,19 +249,6 @@ if __name__ == "__main__":
         obs_years.append(np_obs_points)
         res_years.append(np_res_points)
     # %% plot Loss
-    from matplotlib import rcParams
-    from matplotlib.ticker import FuncFormatter, MaxNLocator
-    
-    def to_integer(x, pos):
-        return '%d' % x
-    
-    config = {
-        "font.size": 8,  # Font size
-        'axes.unicode_minus': False,  # Handle minus signs
-    }
-    rcParams.update(config)
-    
-    formatter = FuncFormatter(to_integer)
     nrows = 1
     ncols = 2
     fig, axs = plt.subplots(dpi=300, nrows=nrows, ncols=ncols, figsize=(8, 2))
@@ -345,7 +290,6 @@ if __name__ == "__main__":
 
             axs_ij.set_xticks([0,1,2,3,4,5,6,7,8,10,11,12,13,14])
             axs_ij.set_xticklabels(legend_name,rotation=-90,fontsize=8)
-            # axs_ij.tick_params(axis='x', labelbottom=False)
             xticklabels = axs_ij.get_xticklabels()
             
             # 将前7个标签设置为红色

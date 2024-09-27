@@ -1,26 +1,22 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Oct 12 09:56:07 2020
-1、在原有基础上加入人工激活层，保证基本物理规律（物候正增长，总干物质正增长，各器官质量守恒）
-2、参数作为输入，不作为隐藏状态
 @author: hanjingye
 """
 
 
-import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-import datetime
 import os
-import math
-import pickle
-import random
-import copy
-
 import torch
-from torch import nn
-from torch.autograd import Variable
+
+
+from models_aux.MyDataset import MyDataSet
+from models_aux.NaiveLSTM import NaiveLSTM
+from models_aux.DeepCGM_fast import DeepCGM
+from models_aux.MCLSTM_fast import MCLSTM
 from torch.utils.data import DataLoader
+import utils
 
 import datetime
 import time
@@ -33,8 +29,14 @@ from matplotlib.patches import Rectangle
 from matplotlib.ticker import MaxNLocator
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
-
+from matplotlib import rcParams
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+
+config = {
+    "font.size": 8,  # Font size
+    'axes.unicode_minus': False,  # Handle minus signs
+}
+rcParams.update(config)
 
 
    
@@ -141,16 +143,6 @@ if __name__ == "__main__":
         wea_fer_list.append(np_wea_fer_dataset)
 
     # %% plot
-    from matplotlib import rcParams
-    from matplotlib.ticker import FuncFormatter, MaxNLocator
-    
-    config = {
-        "font.size": 8,  # Font size
-        'axes.unicode_minus': False,  # Handle minus signs
-    }
-    rcParams.update(config)
-    
-    
     nrows = 7
     ncols = 6
     fig, axs = plt.subplots(dpi=300, nrows=nrows, ncols=ncols, figsize=(10, 10))

@@ -1,29 +1,17 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Oct 12 09:56:07 2020
-1、在原有基础上加入人工激活层，保证基本物理规律（物候正增长，总干物质正增长，各器官质量守恒）
-2、参数作为输入，不作为隐藏状态
 @author: hanjingye
 """
 
 
-import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-import datetime
 import os
-import math
-import pickle
-import random
-import copy
-
 import torch
-from torch import nn
-from torch.autograd import Variable
 from torch.utils.data import DataLoader
 
-import datetime
-import time
+
 from models_aux.MyDataset import MyDataSet
 from models_aux.NaiveLSTM import NaiveLSTM
 from models_aux.DeepCGM_fast import DeepCGM
@@ -32,10 +20,15 @@ import utils
 from matplotlib.patches import Rectangle
 from matplotlib.ticker import MaxNLocator
 from matplotlib.lines import Line2D
+from matplotlib import rcParams
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
-
+config = {
+    "font.size": 8,  # Font size
+    'axes.unicode_minus': False,  # Handle minus signs
+}
+rcParams.update(config)
    
 if __name__ == "__main__":
     # %%load base data
@@ -57,10 +50,6 @@ if __name__ == "__main__":
     obs_col_name = ['TIME','DVS','PAI','WLV','WST','WSO','WAGT',"WRR14"]
     obs_loc = [obs_col_name.index(name) for name in obs_name]
     res_max,res_min,par_max,par_min,wea_fer_max,wea_fer_min = max_min
-        
-    #%% generate dataset
-
-
     # %% creat instances from class_LSTM
     pre_list_group = []
     wea_fer_group = []
@@ -112,7 +101,6 @@ if __name__ == "__main__":
             model.load_state_dict(model_to_load,strict=True)  
     
             #%% -----------------------------------fit------------------------------------
-        
             np_wea_fer_batchs, np_res_batchs, np_pre_batchs, np_obs_batchs, np_fit_batchs = [],[],[],[], []
             mode = "tes"
             for n,(x,y,o,f) in enumerate(tes_DataLoader):
@@ -148,19 +136,6 @@ if __name__ == "__main__":
         res_group.append(np_res_dataset)
         obs_group.append(np_obs_dataset)
     # %% plot
-    from matplotlib import rcParams
-    from matplotlib.ticker import FuncFormatter, MaxNLocator
-    
-    def to_integer(x, pos):
-        return '%d' % x
-    
-    config = {
-        "font.size": 8,  # Font size
-        'axes.unicode_minus': False,  # Handle minus signs
-    }
-    rcParams.update(config)
-    
-    formatter = FuncFormatter(to_integer)
     nrows = 6
     ncols = 3
     fig, axs = plt.subplots(dpi=300, nrows=nrows, ncols=ncols, figsize=(10, 10))
@@ -177,7 +152,6 @@ if __name__ == "__main__":
     for i in range(nrows):
         for j in range(ncols):
             axs_ij = axs[i, j]
-
             
             day = wea_fer_group[j][sample_loc, :, 0]
             res = res_group[j][sample_loc, :, i+1]

@@ -1,26 +1,22 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Oct 12 09:56:07 2020
-1、在原有基础上加入人工激活层，保证基本物理规律（物候正增长，总干物质正增长，各器官质量守恒）
-2、参数作为输入，不作为隐藏状态
 @author: hanjingye
 """
 
 
-import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-import datetime
 import os
-import math
-import pickle
-import random
-import copy
-
 import torch
-from torch import nn
-from torch.autograd import Variable
+
+
+from models_aux.MyDataset import MyDataSet
+from models_aux.NaiveLSTM import NaiveLSTM
+from models_aux.DeepCGM_fast import DeepCGM
+from models_aux.MCLSTM_fast import MCLSTM
 from torch.utils.data import DataLoader
+import utils
 
 import datetime
 import time
@@ -32,10 +28,15 @@ import utils
 from matplotlib.patches import Rectangle
 from matplotlib.ticker import MaxNLocator
 from matplotlib.lines import Line2D
-from matplotlib.ticker import FuncFormatter, MaxNLocator
 from matplotlib.patches import Patch
-
+from matplotlib import rcParams
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+
+config = {
+    "font.size": 8,  # Font size
+    'axes.unicode_minus': False,  # Handle minus signs
+}
+rcParams.update(config)
 
 # 定义计算 RMSE 的函数
 def calculate_rmse(pred, obs, mask):
@@ -43,10 +44,6 @@ def calculate_rmse(pred, obs, mask):
     masked_obs = obs[mask == 1]
     return np.sqrt(np.mean((masked_pred - masked_obs)**2))
 
-def to_integer(x, pos):
-    return '%d' % x
-
-formatter = FuncFormatter(to_integer)
    
 if __name__ == "__main__":
     # %%load base data
@@ -237,20 +234,13 @@ if __name__ == "__main__":
             
             if len([1 for tpt in rmse_values_vars_models_ave_years[i][j] if tpt>=0])==1:
                 axs_ij.hlines(rmse_values_vars_models_ave_years[i][j][-1], x_labels_mid[-1] - 0.5, x_labels_mid[-1] + 0.5, color='green', linewidth=1, label='Average Line')
-                # axs_ij.hlines(rmse_values_vars_models_ave_years[i][j][-1]+rmse_values_vars_models_std_years[i][j][-1], x_labels_mid[-1] - 0.5, x_labels_mid[-1] + 0.5, color='green', linewidth=2, label='Average Line')
-                # axs_ij.hlines(rmse_values_vars_models_ave_years[i][j][-1]-rmse_values_vars_models_std_years[i][j][-1], x_labels_mid[-1] - 0.5, x_labels_mid[-1] + 0.5, color='green', linewidth=2, label='Average Line')
                 upper_boundary = rmse_values_vars_models_ave_years[i][j][-1]+rmse_values_vars_models_std_years[i][j][-1]
                 lower_boundary = rmse_values_vars_models_ave_years[i][j][-1]-rmse_values_vars_models_std_years[i][j][-1]
                 axs_ij.fill_between([x_labels_mid[-1] - 0.5,x_labels_mid[-1] + 0.5], [lower_boundary,lower_boundary], [upper_boundary,upper_boundary], alpha=0.4, linewidth=0,color='green')  # 2018模型
 
 
-                # axs_ij.scatter(x_labels_mid, [x for x in rmse_values_vars_models_ave_years[i][j]],marker="s",linewidths=0.2,color='green')
-                
             if len([1 for tpt in rmse_res_values_vars_years[i][j] if tpt>=0])==1:
                 axs_ij.hlines(rmse_res_values_vars_years[i][j][-1], x_labels_mid[-1] - 0.5, x_labels_mid[-1] + 0.5, color='black', linewidth=1, label='Average Line')
-
-                # axs_ij.scatter(x_labels_mid, [x for x in rmse_res_values_vars_years[i][j]],marker="s",linewidths=1,color='black')
-            # 
             
             y_min, y_max = axs_ij.get_ylim()
             y_lim = max(abs(y_min),abs(y_max)*1.1)
@@ -270,7 +260,7 @@ if __name__ == "__main__":
                 axs_ij.set_xticklabels(bins_phe, fontsize=8, rotation=90)
             else:
                 axs_ij.set_xticklabels([])
-            axs_ij.yaxis.set_major_formatter(formatter)
+            axs_ij.yaxis.set_major_formatter(utils.formatter)
             axs_ij.tick_params(axis='y', which='major', pad=0)  # 'pad' sets the distance between ticks and labels (lower is closer)
     
     # Add gray boxes and column titles

@@ -1,29 +1,17 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Oct 12 09:56:07 2020
-1、在原有基础上加入人工激活层，保证基本物理规律（物候正增长，总干物质正增长，各器官质量守恒）
-2、参数作为输入，不作为隐藏状态
 @author: hanjingye
 """
 
 
-import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-import datetime
 import os
-import math
-import pickle
-import random
-import copy
-
 import torch
-from torch import nn
-from torch.autograd import Variable
 from torch.utils.data import DataLoader
 
-import datetime
-import time
+
 from models_aux.MyDataset import MyDataSet
 from models_aux.NaiveLSTM import NaiveLSTM
 from models_aux.DeepCGM_fast import DeepCGM
@@ -32,10 +20,15 @@ import utils
 from matplotlib.patches import Rectangle
 from matplotlib.ticker import MaxNLocator
 from matplotlib.lines import Line2D
+from matplotlib import rcParams
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
-
+config = {
+    "font.size": 8,  # Font size
+    'axes.unicode_minus': False,  # Handle minus signs
+}
+rcParams.update(config)
    
 if __name__ == "__main__":
     # %%load base data
@@ -124,8 +117,6 @@ if __name__ == "__main__":
             np_obs = utils.unscalling(utils.to_np(var_o),res_max[obs_loc],res_min[obs_loc])
             np_fit = utils.unscalling(utils.to_np(var_f),res_max[obs_loc],res_min[obs_loc])
 
-            a = res_min[obs_loc]
-            b = res_max[obs_loc]
             np_wea_fer_batchs.append(np_wea_fer)
             np_res_batchs.append(np_res)
             np_pre_batchs.append(np_pre)
@@ -144,20 +135,7 @@ if __name__ == "__main__":
         np_fit_points = np_fit_dataset.reshape(-1,obs_num)
         pre_list.append(np_pre_dataset)
     
-    # %% plot
-    from matplotlib import rcParams
-    from matplotlib.ticker import FuncFormatter, MaxNLocator
-    
-    def to_integer(x, pos):
-        return '%d' % x
-    
-    config = {
-        "font.size": 8,  # Font size
-        'axes.unicode_minus': False,  # Handle minus signs
-    }
-    rcParams.update(config)
-    
-    formatter = FuncFormatter(to_integer)
+    # %% plot  
     nrows = 6
     ncols = 6
     fig, axs = plt.subplots(dpi=300, nrows=nrows, ncols=ncols, figsize=(8, 8))
@@ -186,7 +164,7 @@ if __name__ == "__main__":
     
             # Fix the rotation of y-tick labels with proper alignment
             axs_ij.set_yticklabels(axs_ij.get_yticks(), rotation=90, va="center")
-            axs_ij.yaxis.set_major_formatter(formatter)
+            axs_ij.yaxis.set_major_formatter(utils.formatter)
             
             # Set number of y-ticks to 3
             axs_ij.yaxis.set_major_locator(MaxNLocator(nbins=3))
@@ -236,11 +214,7 @@ if __name__ == "__main__":
     ]
     
     # Position the legend
-    fig.legend(handles=legend_handles, loc='lower center', ncol=5, frameon=False)
-
-    # Adjust layout to make room for the legend
-    # plt.subplots_adjust(bottom=0.25)
-    
+    fig.legend(handles=legend_handles, loc='lower center', ncol=5, frameon=False)    
     plt.savefig('figure/Fig.5 Crop growth simulation results.svg', bbox_inches='tight',format="svg")
     plt.show()
     plt.close()
