@@ -1,0 +1,10 @@
+name: DeepCGM
+channels:
+  - defaults
+  - conda-forge
+  - pytorch
+dependencies:
+  - pandas
+  - matplotlib
+  - scipy
+  - pytorch-cuda=12.1
