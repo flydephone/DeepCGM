@@ -1,7 +1,7 @@
 
-# DeepCGM: A Deep Learning-Based Crop Growth Model
+# DeepCGM: A Knowledge-Guided Deep Learning Crop Growth Model
 
-**DeepCGM** is a deep learning model designed to predict crop growth and yield based on various environmental and crop-specific features. This repository contains the code, data preprocessing scripts, and training configurations for replicating the results and further developing the model.
+**DeepCGM** is a novel deep learning architecture that leverages domain knowledge and sparse observational data to simulate crop growth dynamics. The model is designed to address the limitations of both process-based crop models and classical machine learning approaches by incorporating crop growth mechanisms as constraints, ensuring physically plausible predictions even with limited data.
 
 ## Table of Contents
 
@@ -19,20 +19,22 @@
 
 ## Overview
 
-DeepCGM leverages deep learning techniques to simulate crop growth processes under different environmental conditions. The model is capable of learning from spatial and temporal data, offering robust predictions on crop yield and growth patterns.
+Crop growth modeling is essential for understanding and predicting agricultural outcomes. Traditional **process-based crop models**, like ORYZA2000, are effective but often suffer from oversimplification and parameter estimation challenges. Meanwhile, **machine learning methods**, though promising, are often criticized for being "black-box" models that ignore the underlying biology of crop growth and require large datasets that are often unavailable.
 
-**Key Objectives**:
-- Predict crop growth dynamics.
-- Simulate the impact of environmental stress on crops.
-- Facilitate decision-making for precision agriculture.
+**DeepCGM** overcomes these limitations by combining the strengths of process-based models and machine learning. It integrates crop growth principles directly into its architecture, resulting in more accurate, interpretable, and data-efficient predictions for crop growth.
+
+### Key Objectives
+
+- **Accurate Crop Growth Simulation**: Simulate crop growth dynamics for multiple variables while ensuring physically plausible results.
+- **Knowledge-Guided Learning**: Incorporate crop growth principles (such as mass conservation) as knowledge constraints into the learning process.
+- **Data Efficiency**: Achieve accurate predictions with sparse datasets, making the model suitable for real-world agricultural applications with limited data.
 
 ## Features
 
-- **Deep Learning Framework**: Utilizes advanced neural networks like LSTMs, GRUs, and CNNs.
-- **Crop-Specific Modeling**: Supports multiple crops such as maize, wheat, and sugar beet.
-- **Scalability**: Built for high-dimensional spatial data and large datasets.
-- **Data Integration**: Handles raster and tabular datasets including weather, soil, and crop information.
-- **Customizable**: Easily customizable for different regions, crops, and environmental conditions.
+- **Mass-Conserving Deep Learning Architecture**: Adheres to crop growth principles such as mass conservation to ensure physically realistic predictions.
+- **Knowledge-Guided Constraints**: Includes constraints related to crop physiology and model convergence, enabling accurate predictions even with sparse observational data.
+- **Improved Accuracy**: Outperforms traditional process-based models and classical deep learning models on real-world crop datasets.
+- **Multivariable Prediction**: Simulates multiple crop growth variables (e.g., biomass, leaf area) in a single framework.
 
 ## Installation
 
@@ -46,9 +48,9 @@ pip install -r requirements.txt
 
 ## Usage
 
-1. **Preprocess Data**: Prepare your input data using the provided scripts.
+1. **Preprocess Data**: Use the provided scripts to preprocess the input data.
 2. **Train the Model**: Train DeepCGM using your data with custom parameters.
-3. **Evaluate the Model**: Test model performance on unseen data.
+3. **Evaluate the Model**: Compare the model's performance with traditional crop models or other machine learning methods.
 
 Example command to start training:
 ```bash
@@ -57,52 +59,60 @@ python train.py --data_dir /path/to/data --epochs 100 --batch_size 32
 
 ## Model Architecture
 
-DeepCGM consists of the following components:
-- **Input Layer**: Accepts multi-source data (e.g., weather, soil properties, and crop characteristics).
-- **LSTM/GRU Layers**: Capture temporal dependencies in crop growth.
-- **CNN Layers**: Extract spatial patterns from raster data.
-- **Fully Connected Layers**: Integrate learned features and output crop growth predictions.
+DeepCGM is a **deep learning-based crop growth model** with a unique architecture designed to respect the biological processes of crop growth. The model includes:
 
-You can customize the architecture by modifying the `model.py` script.
+- **Mass-Conserving Layers**: Ensure physically plausible crop growth curves by enforcing mass conservation across crop variables.
+- **Knowledge-Guided Constraints**: Use crop growth principles to guide the model training, preventing unrealistic predictions.
+- **LSTM/GRU Layers**: Capture temporal dependencies in the growth process.
+- **CNN Layers**: Extract spatial patterns from multi-source data.
 
 ## Training
 
-To train the model, ensure you have the necessary dataset in the correct format. You can adjust hyperparameters like learning rate, batch size, and the number of epochs in `config.json`.
+The model is trained using sparse datasets, with the following features:
 
+- **Crop Physiology Constraints**: Crop physiology is incorporated directly into the training process.
+- **Convergence Constraints**: Help ensure that the model reaches realistic steady-state solutions during training.
+- **Efficient Data Usage**: Designed to work with small or incomplete datasets, typical in agricultural experiments.
+
+To start training the model:
 ```bash
 python train.py --config config.json
 ```
 
 ## Evaluation
 
-Evaluate the model performance using various metrics such as RMSE, MAE, and R2:
+DeepCGM is evaluated using an observational dataset from a two-year rice experiment involving 105 plots. It is compared against the **ORYZA2000 process-based model** and classical deep learning models.
+
+Metrics such as **normalized mean square error (MSE)** and **R2 score** are used to assess the model's performance:
 
 ```bash
 python evaluate.py --model_path /path/to/saved_model
 ```
 
-The results will be saved in the `results/` folder.
-
 ## Data
 
 The dataset includes:
-- **Weather data** (temperature, rainfall, humidity, etc.).
-- **Soil data** (nutrient levels, pH, moisture, etc.).
-- **Crop management data** (sowing date, irrigation schedule, etc.).
+
+- **Weather Data**: Temperature, rainfall, and humidity.
+- **Soil Data**: Nutrient levels, pH, moisture content.
+- **Management Data**: Sowing date, irrigation schedule, etc.
 
 Ensure your data follows the structure specified in `data/README.md`.
 
 ## Results
 
-Here are some results from our test runs:
-- **RMSE**: 5.4
-- **R2 Score**: 0.89
+DeepCGM produces **physically plausible crop growth curves** and outperforms both traditional process-based models and classical deep learning models:
 
-For detailed results and model performance on different crops, check the `results/` folder.
+- **Normalized MSE Improvement**: 
+  - From 0.0381 to 0.0338 (2019)
+  - From 0.0473 to 0.0397 (2018)
+
+The results are stored in the `results/` folder.
 
 ## Contributing
 
-We welcome contributions from the community. To contribute:
+We welcome contributions! To contribute:
+
 1. Fork this repository.
 2. Create a branch (`git checkout -b feature-xyz`).
 3. Commit your changes (`git commit -m "Add feature xyz"`).
