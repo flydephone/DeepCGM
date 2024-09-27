@@ -210,7 +210,7 @@ if __name__ == "__main__":
         fig.text(box_x0 + box_width / 2, box_y0 + box_height / 2, col,
                   ha="center", va="center", fontsize=12, color="black", zorder=4)
     fig.align_labels()
-    plt.rcParams['svg.fonttype'] = 'none'  # Ensure text is not converted to paths
+    
     plt.savefig('figure/Appendix D. The scatter plot of observation and simulation by calibrated ORYZA2000.svg', bbox_inches='tight',format="svg")
     plt.show()
     plt.close()
@@ -293,7 +293,7 @@ if __name__ == "__main__":
               ha="center", va="center", fontsize=12, color="black", zorder=4)
 
     fig.align_labels()
-    plt.rcParams['svg.fonttype'] = 'none'  # Ensure text is not converted to paths
+    
     plt.savefig('figure/Appendix E. The scatter plot of observation and simulation by calibrated DeepCGM.svg', bbox_inches='tight',format="svg")
     plt.show()
     plt.close()

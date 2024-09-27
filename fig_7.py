@@ -231,7 +231,7 @@ if __name__ == "__main__":
     ]
     plt.subplots_adjust(bottom=0.075)
     fig.legend(handles=legend_handles, loc='lower center', ncol=4, frameon=False)
-    plt.rcParams['svg.fonttype'] = 'none'  # Ensure text is not converted to paths
+    
     plt.savefig('figure/Fig.7 Result examples of partial removed.svg', bbox_inches='tight',format="svg")
     plt.show()
     plt.close()

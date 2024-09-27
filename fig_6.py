@@ -235,7 +235,7 @@ if __name__ == "__main__":
         Line2D([0], [0], color="lightcoral", lw=1, label='DeepCGM'),    # Red line with CG loss
     ]
     fig.legend(handles=legend_handles, loc='lower center', ncol=4, frameon=False)
-    plt.rcParams['svg.fonttype'] = 'none'  # Ensure text is not converted to paths
+    
     plt.savefig('figure/Fig.6 Crop growth simulated by LSTM and DeepCGM on sparse and interpolated dataset.svg', bbox_inches='tight',format="svg")
     plt.show()
     plt.close()

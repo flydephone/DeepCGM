@@ -240,7 +240,7 @@ if __name__ == "__main__":
 
     # Adjust layout to make room for the legend
     # plt.subplots_adjust(bottom=0.25)
-    plt.rcParams['svg.fonttype'] = 'none'  # Ensure text is not converted to paths
+    
     plt.savefig('figure/Fig.5 Crop growth simulation results.svg', bbox_inches='tight',format="svg")
     plt.show()
     plt.close()

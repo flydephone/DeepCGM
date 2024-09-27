@@ -382,7 +382,7 @@ if __name__ == "__main__":
         # Add the title inside the gray box
         fig.text(box_x0 + box_width / 2, box_y0 + box_height / 2, col,
                  ha="center", va="center", fontsize=12, color="black", zorder=4)
-    plt.rcParams['svg.fonttype'] = 'none'  # Ensure text is not converted to paths
+    
     plt.savefig('figure/Fig.11 Overall accuracy of different models trained with different strategies on sparse and interpolated datasets.svg', bbox_inches='tight',format="svg")
     plt.show()
     plt.close()
@@ -466,7 +466,7 @@ if __name__ == "__main__":
         # Add the title inside the gray box
         fig.text(box_x0 + box_width / 2, box_y0 + box_height / 2, col,
                  ha="center", va="center", fontsize=12, color="black", zorder=4)
-    plt.rcParams['svg.fonttype'] = 'none'  # Ensure text is not converted to paths
+    
     plt.savefig('figure/Fig.12 The rmse and RMSE of different models trained by different strategies on sparse and interpolated dataset .svg', bbox_inches='tight',format="svg")
     plt.show()
     plt.close()
