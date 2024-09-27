@@ -3,8 +3,12 @@ channels:
   - defaults
   - conda-forge
   - pytorch
+  - nvidia
 dependencies:
   - pandas
   - matplotlib
   - scipy
+  - pytorch
+  - torchvision
+  - torchaudio
   - pytorch-cuda=12.1

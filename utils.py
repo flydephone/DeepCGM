@@ -25,19 +25,11 @@ from copy import deepcopy
 
 
 
-# config = {
-#             "font.family": 'serif',
-#             "font.size": 12,# 相当于小四大小
-#             "mathtext.fontset": 'stix',#matplotlib渲染数学字体时使用的字体，和Times New Roman差别不大
-#             "font.serif": ["SimSun"],#宋体
-#             'axes.unicode_minus': False, # 处理负号，即-号
-#           }
+from matplotlib.ticker import FuncFormatter, MaxNLocator
 
-# font_label = {
-#         'color':  'black',
-#         'fontweight': 100,
-#         'size': 16,
-#         }
+def to_integer(x, pos):
+    return '%d' % x
+formatter = FuncFormatter(to_integer)
 # rcParams.update(config)
 
 def plt_element(xlabel,ylabel,title):

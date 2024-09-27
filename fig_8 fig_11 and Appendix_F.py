@@ -117,6 +117,7 @@ if __name__ == "__main__":
         Line2D([0], [0], lw=1, color='orange',label='testing loss'),    # Red line with CG loss
     ]
     fig.legend(handles=legend_handles, loc='lower center', ncol=2, fontsize=12, frameon=False)
+    plt.rcParams['svg.fonttype'] = 'none'  # Ensure text is not converted to paths
     plt.savefig('figure/Fig.8 Fitting loss of training and test set of the LSTM and DeepCGM.png.svg', bbox_inches='tight',format="svg")
     plt.show()
     plt.close(fig)
@@ -180,7 +181,7 @@ if __name__ == "__main__":
     
             axs[j, i].text(0.35, 0.8, "%02d" % (seed), transform=axs[j, i].transAxes, fontsize=10)
     
-    
+    plt.rcParams['svg.fonttype'] = 'none'  # Ensure text is not converted to paths
     plt.savefig('figure/Appendix F Fitting loss of training and test set of the LSTM and DeepCGM.png', bbox_inches='tight')
     plt.show()
     plt.close(fig)

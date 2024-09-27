@@ -311,6 +311,7 @@ if __name__ == "__main__":
     
     # Position the legend
     fig.legend(handles=legend_handles, loc='lower center', ncol=5, fontsize=8, frameon=False, bbox_to_anchor=(0.45, -0.4))   
+    plt.rcParams['svg.fonttype'] = 'none'  # Ensure text is not converted to paths
     plt.savefig('figure/Fig.10 The average RMSE and the corresponding standard deviation of DeepCGM and RMSE of ORYZA2000 at different growth stages.svg', bbox_inches='tight',format="svg")
     plt.show()
     plt.close()

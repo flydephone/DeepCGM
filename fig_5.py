@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Oct 12 09:56:07 2020
+1、在原有基础上加入人工激活层，保证基本物理规律（物候正增长，总干物质正增长，各器官质量守恒）
+2、参数作为输入，不作为隐藏状态
 @author: hanjingye
 """
 
@@ -238,7 +240,7 @@ if __name__ == "__main__":
 
     # Adjust layout to make room for the legend
     # plt.subplots_adjust(bottom=0.25)
-    
+    plt.rcParams['svg.fonttype'] = 'none'  # Ensure text is not converted to paths
     plt.savefig('figure/Fig.5 Crop growth simulation results.svg', bbox_inches='tight',format="svg")
     plt.show()
     plt.close()
