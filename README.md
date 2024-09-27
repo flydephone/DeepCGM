@@ -3,20 +3,9 @@
 
 **DeepCGM** is a novel deep learning architecture that leverages domain knowledge and sparse observational data to simulate crop growth dynamics. This repository contains the model code, dataset formatting scripts, figures, and utilities for training and evaluating the model.
 
-## Table of Contents
+## License
 
-- [Overview](#overview)
-- [Features](#features)
-- [Installation](#installation)
-- [Repository Structure](#repository-structure)
-- [Usage](#usage)
-- [Model Architecture](#model-architecture)
-- [Training](#training)
-- [Evaluation](#evaluation)
-- [Data](#data)
-- [Results](#results)
-- [Contributing](#contributing)
-- [License](#license)
+All rights reserved. This work is **under review, and no permissions** are granted for use, modification, or distribution until further notice.
 
 ## Overview
 
@@ -38,36 +27,54 @@ To install the dependencies, clone the repository and install the required packa
 ```bash
 git clone https://github.com/yourusername/DeepCGM.git
 cd DeepCGM
-pip install -r requirements.txt
+conda env create -f DeepCGM.yaml
 ```
 
 ## Repository Structure
 
-- **`DeepCGM.yaml`**: Configuration file for model training and evaluation.
+- **`DeepCGM.yaml`**: Requirements.
 - **`train.py`**: Script to train the DeepCGM model.
 - **`utils.py`**: Utility functions for data preprocessing and model support.
 - **`fig_5.py`, `fig_6.py`, `fig_7.py`, `fig_9.py`, etc.**: Scripts to generate figures for model results.
 - **`models_aux`**: Folder containing auxiliary models and related code.
-- **`format_dataset`**: Folder for scripts related to dataset formatting and preprocessing.
+- **`format_dataset`**: Formatted dataset.
 - **`figure`**: Folder for storing figures generated during model evaluation and analysis.
 
-## Usage
 
-### 1. Preprocess the Data
+## Model Architecture
 
-Format your input data using the provided scripts in the `format_dataset` folder.
+DeepCGM is a **deep learning-based crop growth model** with a mass-conserving architecture. The architecture ensures that simulated crop growth adheres to physical principles, including:
 
-### 2. Train the Model
+![Model Structure](figure/DeepCGM.svg)
+
+## Data
+All data are time series data.
+- **Input**: Radiation, Maximun temperature, Minimun temperature, cumulative nigrogen, Development stage (simulated by ORYZA2000), etc.
+- **Output**: Plant area index (PAI), Organ biomass (leaf, stem, grain), Above ground biomass, Yield
+
+
+### Train the Model
 
 Run the `train.py` script to train the model using your formatted data:
 
 ```bash
-python train.py --config DeepCGM.yaml
+python train_from_scratch.py --model DeepCGM --target spa --input_mask 1 --convergence_loss 1 --tra_year 2018
 ```
+You can modify the training parameters, such as model type, knowledge triggers, and training years
+### Arguments:
+- **--model**: Specifies the model type (`NaiveLSTM`,`MCLSTM`, `DeepCGM`).
+- **--target**: Specifies the training label ( `spa` for sparse dataset and `int` for interpolated dataset).
+- **--input_mask**: Enables the input mask (`1` to enable, `0` to disable).
+- **--convergence_trigger**: Enables the convergence_loss (`1` to enable, `0` to disable).
+- **--tra_year**: Specifies the training year (e.g., `2018` and `2019`).
 
-You can modify the training parameters, such as learning rate, batch size, and epochs, in the `DeepCGM.yaml` file.
+## Training flowchat
 
-### 3. Evaluate the Model
+The `fitting loss`, `convergence loss` and `input mask` can be used in training DeepCGM
+
+![Training flowchart](figure/Traing.svg)
+
+### Evaluate the Model
 
 Use the figure scripts (e.g., `fig_5.py`, `fig_6.py`, etc.) to generate visualizations of the model's performance. Example:
 
@@ -75,65 +82,15 @@ Use the figure scripts (e.g., `fig_5.py`, `fig_6.py`, etc.) to generate visualiz
 python fig_5.py
 ```
 
-These scripts generate figures to evaluate the model's predictions across multiple variables and datasets.
+These scripts generate figures to evaluate the model's predictions across multiple variables and datasets, the result is:
 
-## Model Architecture
+![Time series result](figure/Fig.5%20Crop%20growth%20simulation%20results.svg)
 
-DeepCGM is a **deep learning-based crop growth model** with a mass-conserving architecture. The architecture ensures that simulated crop growth adheres to physical principles, including:
+**DeepCGM outperforms traditional process-based models (Normlized MSE):**
 
-- **Mass-Conserving Layers**: Ensure physically plausible crop growth curves.
-- **LSTM/GRU Layers**: Capture temporal dependencies in crop growth data.
-- **CNN Layers**: Extract spatial patterns from multi-source datasets.
+| Model     | 2018-train 2019-test | 2019-train 2018-test |
+|-----------|----------------------|----------------------|
+| ORYZA2000 | 0.0381               | 0.0474               |
+| DeepCGM   | 0.0349               | 0.0393               |
 
-## Training
-
-Training is done using the `train.py` script with configurations defined in `DeepCGM.yaml`. Key features include:
-
-- **Knowledge-Guided Constraints**: Crop physiology is incorporated to avoid unrealistic predictions.
-- **Sparse Data Training**: Efficiently uses limited datasets typical of agricultural research.
-
-```bash
-python train.py --config DeepCGM.yaml
-```
-
-## Evaluation
-
-Evaluate the model's performance using various metrics such as **normalized mean square error (MSE)**, and generate figures using the provided scripts (e.g., `fig_5.py`, `fig_6.py`).
-
-```bash
-python fig_5.py
-```
-
-## Data
-
-The dataset should include:
-
-- **Weather Data**: Temperature, rainfall, humidity, etc.
-- **Soil Data**: Nutrient levels, pH, moisture content, etc.
-- **Management Data**: Sowing date, irrigation schedule, etc.
-
-Ensure the data format follows the structure described in the `format_dataset` folder.
-
-## Results
-
-DeepCGM generates **physically plausible crop growth curves** and outperforms traditional process-based models:
-
-- **Normalized MSE Improvement**: 
-  - From 0.0381 to 0.0338 (2019)
-  - From 0.0473 to 0.0397 (2018)
-
-The results are saved in the `figure` folder, and detailed evaluation figures are generated using the provided scripts.
-
-## Contributing
-
-We welcome contributions! To contribute:
-
-1. Fork this repository.
-2. Create a branch (`git checkout -b feature-xyz`).
-3. Commit your changes (`git commit -m "Add feature xyz"`).
-4. Push to the branch (`git push origin feature-xyz`).
-5. Create a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+More results are saved in the `figure` folder, and detailed evaluation figures are generated using the provided scripts.
