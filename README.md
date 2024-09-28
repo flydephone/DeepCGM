@@ -26,25 +26,25 @@ Crop growth modeling is essential for understanding and predicting agricultural 
 To install the dependencies, clone the repository and install the required packages using the command below:
 
 ```bash
-git clone https://github.com/yourusername/DeepCGM.git
+git clone https://github.com/flydephone/DeepCGM.git
 cd DeepCGM
-conda env create -f requirements.yaml
+pip install -r requirements.txt
 ```
 
 ## Repository Structure
 
-- **`DeepCGM.yaml`**: Requirements.
+- **`requirements.txt`**: Requirements.
 - **`train.py`**: Script to train the DeepCGM model.
-- **`utils.py`**: Utility functions for data preprocessing and model support.
+- **`utils.py`**: Utility functions.
 - **`fig_5.py`, `fig_6.py`, `fig_7.py`, `fig_9.py`, etc.**: Scripts to generate figures for model results.
-- **`models_aux`**: Folder containing auxiliary models and related code.
+- **`models_aux`**: Folder containing models.
 - **`format_dataset`**: Formatted dataset.
 - **`figure`**: Folder for storing figures generated during model evaluation and analysis.
 
 
 ## Model Architecture
 
-DeepCGM is a **deep learning-based crop growth model** with a mass-conserving architecture. The architecture ensures that simulated crop growth adheres to physical principles, including:
+DeepCGM is a **deep learning-based crop growth model** with a [mass-conserving architecture](https://arxiv.org/abs/2101.05186) and crop growth process. The architecture ensures that simulated crop growth adheres to physical principles:
 
 ![Model Structure](figure/DeepCGM.svg)
 
@@ -56,7 +56,7 @@ All data are time series data.
 
 ### Train the Model
 
-Run the `train.py` script to train the model using your formatted data:
+Run the `train.py` script to train the model:
 
 ```bash
 python train_from_scratch.py --model DeepCGM --target spa --input_mask 1 --convergence_loss 1 --tra_year 2018
