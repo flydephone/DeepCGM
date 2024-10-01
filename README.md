@@ -2,6 +2,8 @@
 
 **DeepCGM** is a novel deep learning architecture that leverages domain knowledge and sparse observational data to simulate crop growth dynamics. This repository contains the model code, dataset formatting scripts, figures, and utilities for training and evaluating the model.
 
+![Model Structure](figure/Framework%20for%20training%20the%20DeepCGM%20model%20and%20assessing%20the%20performance.svg)
+
 ## License
 
 All rights reserved. This work is **under review, and no permissions** are granted for use, modification, or distribution until further notice.
